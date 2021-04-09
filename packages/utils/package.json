@@ -1,15 +1,20 @@
 {
   "name": "@tearust/utils",
   "version": "0.0.1",
+  "license": "GPL-3.0",
   "type": "module",
   "description": "A collection of useful utilities for @tearust",
   "main": "index.js",
   "author": "Jacky.li <liyangwood@gmail.com>",
   "dependencies": {
     "@babel/runtime": "7.13.10",
-    "lodash": "4.17.21"
+    "@types/uuid": "8.3.0",
+    "lodash": "4.17.21",
+    "moment": "2.29.1",
+    "uuid": "8.3.2"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.168"
+    "@types/lodash": "4.14.168",
+    "@types/moment": "2.13.0"
   }
 }
