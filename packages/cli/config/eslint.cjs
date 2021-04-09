@@ -57,10 +57,6 @@ module.exports = {
     '@typescript-eslint/type-annotation-spacing': 'error',
     'arrow-parens': ['error', 'always'],
     'default-param-last': [0], // conflicts with TS version (this one doesn't allow TS ?)
-    'header/header': [2, 'line', [
-      { pattern: ' Copyright \\d{4}(-\\d{4})? @polkadot/' },
-      ' SPDX-License-Identifier: Apache-2.0'
-    ], 2],
     'jsx-quotes': ['error', 'prefer-single'],
     // 'react/prop-types': [0], // this is a completely broken rule
     'object-curly-newline': ['error', {
@@ -89,9 +85,9 @@ module.exports = {
     //   maximum: 1,
     //   when: 'always'
     // }],
-    'react/jsx-sort-props': [2, {
-      noSortAlphabetically: false
-    }],
+    // 'react/jsx-sort-props': [2, {
+    //   noSortAlphabetically: false
+    // }],
     'sort-destructure-keys/sort-destructure-keys': [2, {
       caseSensitive: true
     }],

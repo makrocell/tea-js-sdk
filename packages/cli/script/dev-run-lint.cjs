@@ -6,7 +6,7 @@ run(async ()=>{
   const argv = process.argv.slice(2);
 
   const lint_cmd = cliDirPath('cmd/eslint.cjs');
-  const fixed = argv.includes('fixed') ? '--fixed' : ''
+  const fixed = argv.includes('fix') ? '--fix' : ''
   execSync(`node ${lint_cmd} ${fixed} --resolve-plugins-relative-to ${__dirname} --ext .js,.cjs,.mjs,.ts,.tsx ${rootDirPath()}`, true);
 });
 
