@@ -11,18 +11,18 @@
     "typescript": "^4.2.4"
   },
   "scripts": {
-    "build": "polkadot-dev-build-ts",
-    "build:release": "polkadot-ci-ghact-build",
-    "lint": "polkadot-dev-run-lint",
-    "clean": "polkadot-dev-clean-build",
-    "networks:crosscheck": "polkadot-dev-run-test packages/networks/src/crosscheck",
-    "postinstall": "polkadot-dev-yarn-only",
-    "test": "polkadot-dev-run-test --coverage --runInBand --testPathIgnorePatterns crosscheck",
-    "test:one": "polkadot-dev-run-test"
+    "build": "yarn workspace @tearust/cli build:dev",
+    "lint": "yarn workspace @tearust/cli lint",
+    
+    "test": "yarn workspace @tearust/cli test",
+
+    "check": "yarn workspace @tearust/cli check-dev-env",
+    "clean": "yarn workspace @tearust/cli dev-clean-build",
+
+    "//build:extra": ""
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
-    "@polkadot/dev": "^0.62.7",
     "@polkadot/ts": "^0.3.62",
     "@types/jest": "^26.0.22"
   }

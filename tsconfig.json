@@ -1,17 +1,19 @@
 {
-  "extends": "@polkadot/dev/config/tsconfig.json",
   "exclude": [
     "build/**/*",
     "**/build/**/*"
   ],
+  "extends": "@tearust/cli/config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      
+      "@tearust/utils": [ "packages/utils/src" ],
+      "@tearust/utils/*": [ "packages/utils/src/*" ],
     },
     "skipLibCheck": true,
     "typeRoots": [
       "./node_modules/@polkadot/ts",
+      "./node_modules/@tearust/ts",
       "./node_modules/@types",
     ]
   }
