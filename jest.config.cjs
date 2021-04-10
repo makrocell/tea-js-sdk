@@ -8,7 +8,9 @@ module.exports = Object.assign({}, config, {
     '@tearust/utils(.*)$': '<rootDir>/packages/utils/src/$1'
   },
   modulePathIgnorePatterns: [
-    '<rootDir>/packages/*/build'
+    '<rootDir>/packages/*/build',
+
+    '<rootDir>/packages/utils/*'
   ],
   transformIgnorePatterns: []
 });
