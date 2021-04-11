@@ -1,4 +1,3 @@
-
 import { 
   ApiPromise, 
   Keyring, 
@@ -7,6 +6,7 @@ import {
 import {
   cryptoWaitReady,
   mnemonicGenerate,
+  encodeAddress,
 } from '@polkadot/util-crypto';
 import {
   stringToU8a, 
@@ -20,7 +20,8 @@ import {
 import BN from 'bn.js';
 import extension from './extension';
 
-import GluonPallet from './pallet/gluon';
+import GluonPallet from './pallet/GluonPallet';
+import RecoveryPallet from './pallet/RecoveryPallet';
 
 const types: any = require('./res/types');
 const rpc:any = require('./res/rpc');
@@ -41,8 +42,10 @@ export default class {
   opts: any;
   api: ApiPromise | null;
   extension: any;
+  callback: any = {};
 
-  gluonPallet: GluonPallet | null;
+  private gluonPallet: GluonPallet | null;
+  private recoveryPallet: RecoveryPallet | null;
 
   constructor(opts: Layer1Opts){
     if(!opts || !opts.ws_url){
@@ -56,8 +59,43 @@ export default class {
 
     this.api = null;
     this.gluonPallet = null;
+    this.recoveryPallet = null;
 
-    this.extension = extension;
+    this.extension = null;
+  }
+
+  destroy(){
+    this.api = null;
+    this.callback = {};
+    this.gluonPallet = null;
+    this.recoveryPallet = null;
+    this.extension = null;
+  }
+
+  buildCallback(key: string, cb: Function) {
+    this.callback[key] = cb;
+  }
+
+  handle_events(events: any) {
+    _.each(events, (record: any) => {
+      const {event, phase} = record;
+      const types = event.typeDef;
+
+      console.log(`[received layer1 event] section=${event.section}`);
+      let eventData: any = {};
+      event.data.forEach((data: any, index: number) => {
+        console.log(`[layer1 event data] ${types[index].type}: ${data.toString()}`);
+        eventData[types[index].type] = data;
+      });
+
+      const data = event.data;
+      const key = event.section+'.'+event.method;
+      const cb = _.get(this.callback, key, null);
+      if(cb){
+        cb(data, event);
+      }
+    });
+    
   }
 
   async init(){
@@ -68,8 +106,14 @@ export default class {
       rpc
     });
 
+    this.extension = extension;
     await this.extension.init();
+
     await cryptoWaitReady();
+
+    this.api.query.system.events((events) => {
+      this.handle_events(events);
+    });
   }
 
   async getLayer1Nonce(address: string){
@@ -84,6 +128,13 @@ export default class {
     }
 
     return this.gluonPallet;
+  }
+  getRecoveryPallet(): RecoveryPallet {
+    if(!this.recoveryPallet){
+      this.recoveryPallet = new RecoveryPallet(this);
+    }
+
+    return this.recoveryPallet;
   }
 
   getApi(): ApiPromise{
@@ -210,10 +261,10 @@ export default class {
   _findError(data: any) {
     let err = false;
     let type_index = -1;
-    _.each(data.toJSON(), (p) => {
-      if (!_.isUndefined(_.get(p, 'Module.error'))) {
-        err = _.get(p, 'Module.error');
-        type_index = _.get(p, 'Module.index');
+    _.each(data.toJSON(), (p: any) => {
+      if (!_.isUndefined(_.get(p, 'module.error'))) {
+        err = _.get(p, 'module.error');
+        type_index = _.get(p, 'module.index');
         return false;
       }
     });
@@ -225,5 +276,25 @@ export default class {
     return null;
   }
 
+  async signWithExtension(account: any, data: any){
+    if(!this.extension){
+      throw 'Not Extension Environment.';
+    }
+    const api = this.getApi();
+    await this.extension.setSignerForAddress(account, api);
+    const sig = await api.sign(account, {
+      data: stringToHex(data)
+    });
+    return sig;
+  }
+
+  async getCurrentBlock(){
+    const api = this.getApi();
+    return new Promise((resolve)=>{
+      api.rpc.chain.subscribeNewHeads((header) => {
+        resolve(header);
+      })
+    });
+  }
 
 }

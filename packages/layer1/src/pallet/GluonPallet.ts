@@ -99,5 +99,19 @@ export default class extends BasePallet {
 
     return me;
   }
+
+  async addTestAsset(account: any, test_address: string, key_type: string){
+    const api = this.layer1.getApi();
+    const tx = api.tx.gluon.testAddAccountAsset(stringToHex(key_type), stringToHex(key_type+'_'+test_address));
+
+    await this.layer1.sendTx(account, tx);
+  }
+
+  async getAccountAssets(address: string){
+    const api = this.layer1.getApi();
+    const rs = await api.query.gluon.accountAssets(address);
+
+    return rs.toHuman();
+  }
   
 }
