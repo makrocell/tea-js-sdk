@@ -7,8 +7,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@tearust/utils": [ "packages/utils/src" ],
-      "@tearust/utils/*": [ "packages/utils/src/*" ],
+      "tearust_utils": [ "packages/utils/src" ],
+      "tearust_utils/*": [ "packages/utils/src/*" ],
     },
     "skipLibCheck": true,
     "typeRoots": [

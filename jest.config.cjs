@@ -5,12 +5,13 @@ const config = require('@tearust/cli/config/jest.cjs');
 
 module.exports = Object.assign({}, config, {
   moduleNameMapper: {
-    '@tearust/utils(.*)$': '<rootDir>/packages/utils/src/$1'
+    'tearust_utils(.*)$': '<rootDir>/packages/utils/src/$1'
   },
   modulePathIgnorePatterns: [
     '<rootDir>/packages/*/build',
 
-    '<rootDir>/packages/utils/*'
+    // '<rootDir>/packages/layer1/*',
+    '<rootDir>/packages/utils/*',
   ],
   transformIgnorePatterns: []
 });

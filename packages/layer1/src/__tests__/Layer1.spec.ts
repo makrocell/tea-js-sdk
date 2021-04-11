@@ -1,5 +1,5 @@
-import {Layer1} from '../';
-import {sleep} from '@tearust/utils';
+import {Layer1, bnToBn, helper} from '../';
+const {sleep} = require('tearust_utils');
 
 describe('layer1/Layer1', () => {
   
@@ -13,15 +13,45 @@ describe('layer1/Layer1', () => {
     const test_mn = o.mnemonicGenerate();
     const test_ac = o.getAccountFrom(test_mn);
 
-    let balance = await o.getRealAccountBalance(test_ac.address);
+    const alice = o.getAccountFrom('Alice');
+    const bob = o.getAccountFrom('Bob');
 
-    await o.faucet(test_ac.address);
-    await sleep(1000);
+    // let balance = await o.getRealAccountBalance(test_ac.address);
 
-    balance = await o.getRealAccountBalance(test_ac.address);
+    // await o.faucet(test_ac.address);
+    // await sleep(1000);
 
-    expect(balance.cmp(o.asUnit(1000))).toEqual(0);
-  });
+    // balance = await o.getRealAccountBalance(test_ac.address);
+
+    // const b1 = bnToBn(balance);
+    // const b2 = bnToBn(o.asUnit(1000));
+    // expect(b1.cmp(b2)).toEqual(0);
+
+    const api = o.getApi();
+    
+    // gluon pallet - start
+    // const gluonPallet = o.getGluonPallet();
+    // let profile = await gluonPallet.getAccountProfile(alice.address);
+    // console.log(11, profile);
+    // const nonce = helper.getRandomNonce();
+    // await gluonPallet.sendNonceForPairMobileDevice(nonce, alice);
+
+    // await sleep(1000);
+
+    // await gluonPallet.responePairWithNonce(nonce, bob, alice.address, {uuid: 'test_uuid'});
+    // await sleep(1000);
+
+    // profile = await gluonPallet.getAccountProfile(alice.address);
+    // console.log(22, profile);
+
+    // await gluonPallet.unpair(alice);
+    // await sleep(1000);
+
+    // profile = await gluonPallet.getAccountProfile(alice.address);
+    // console.log(33, profile);
+    // gluon pallet - end
+
+  }, 30000);
 
 
 });

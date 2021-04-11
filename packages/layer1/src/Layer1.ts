@@ -14,16 +14,20 @@ import {
   u8aToHex, 
   stringToHex, 
   promisify,
-  
+  bnToBn,
+  BN_MILLION
 } from '@polkadot/util';
 import BN from 'bn.js';
 import extension from './extension';
 
-import {_} from '@tearust/utils';
+import GluonPallet from './pallet/gluon';
 
 const types: any = require('./res/types');
 const rpc:any = require('./res/rpc');
 const errors:any = require('./res/errors');
+
+const {_} = require('tearust_utils');
+
 
 type Layer1Opts = {
   ws_url: string,
@@ -38,6 +42,8 @@ export default class {
   api: ApiPromise | null;
   extension: any;
 
+  gluonPallet: GluonPallet | null;
+
   constructor(opts: Layer1Opts){
     if(!opts || !opts.ws_url){
       throw 'Invalid Layer1 options';
@@ -49,6 +55,8 @@ export default class {
     }, opts);
 
     this.api = null;
+    this.gluonPallet = null;
+
     this.extension = extension;
   }
 
@@ -64,6 +72,20 @@ export default class {
     await cryptoWaitReady();
   }
 
+  async getLayer1Nonce(address: string){
+    const api = this.getApi();
+    const nonce = await api.rpc.system.accountNextIndex(address);
+    return nonce;
+  }
+
+  getGluonPallet(): GluonPallet {
+    if(!this.gluonPallet){
+      this.gluonPallet = new GluonPallet(this);
+    }
+
+    return this.gluonPallet;
+  }
+
   getApi(): ApiPromise{
     const api = this.api;
     if(!api){
@@ -72,7 +94,7 @@ export default class {
     return api;
   }
 
-  async getRealAccountBalance(account: string){
+  async getRealAccountBalance(account: string): Promise<number> {
     const api = this.getApi();
     let { data: { free: previousFree }, nonce: previousNonce } = await api.query.system.account(account);
 
@@ -80,10 +102,10 @@ export default class {
     return bn;
   }
 
-  async getAccountBalance(account: string){
+  async getAccountBalance(account: string): Promise<number>{
     const real_balance = await this.getRealAccountBalance(account);
 
-    const free = real_balance / this.asUnit().toNumber();
+    const free = real_balance / this.asUnit();
     return Math.floor(free*10000)/10000;
   }
 
@@ -101,12 +123,12 @@ export default class {
     return mnemonicGenerate();
   }
 
-  asUnit(num: number=1): BN{
-    const yi = new BN('100000000', 10);
-    const million = new BN('10000000', 10);
+  asUnit(num: number=1): number{
+    const yi = new BN(BN_MILLION);
+    const million = new BN(BN_MILLION);
     const unit: BN = yi.mul(million);
 
-    return unit.mul(new BN(num));
+    return parseInt(unit.mul(new BN(num)).toString(10), 10);
   }
 
   async faucet(target_address: string){
@@ -138,11 +160,19 @@ export default class {
     }
   }
 
-  async sendTx(account: any, tx: any){
+  async sendTx(account: any, tx: any, cb_true_data?: any){
     await this.buildAccount(account)
     return this.promisify(async (cb: Function)=>{
       await tx.signAndSend(account, (param: any)=>{
-        this._transactionCallback(param, cb);
+        this._transactionCallback(param, (error: any) => {
+          if(error){
+            cb(error);
+          }
+          else{
+            cb(null, cb_true_data);
+          }
+        });
+        
       });
     })
   }

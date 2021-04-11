@@ -7,7 +7,8 @@ const {
   web3Enable: any, 
   web3FromAddress: any,
 } = require('@polkadot/extension-dapp');
-import {_} from '@tearust/utils';
+
+import {_} from 'tearust_utils';
 
 class Extension {
   constructor(){
@@ -20,7 +21,7 @@ class Extension {
   async getAllAccounts(){
     const allAccounts = await web3Accounts();
 
-    return _.map(allAccounts, (item) => {
+    return _.map(allAccounts, (item: any) => {
       return {
         address: item.address,
         name: item.meta.name,
