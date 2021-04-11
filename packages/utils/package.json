@@ -2,6 +2,7 @@
   "name": "tearust_utils",
   "version": "0.0.3",
   "license": "GPL-3.0",
+  "repository": "https://github.com/tearust/tea-js-sdk",
   "type": "module",
   "description": "A collection of useful utilities for @tearust",
   "main": "index.js",
