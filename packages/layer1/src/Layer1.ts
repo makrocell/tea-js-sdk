@@ -68,7 +68,7 @@ export default class {
     this.extension = null;
   }
 
-  buildCallback(key: string, cb: ()=>void) {
+  buildCallback(key: string, cb: () => void) {
     this.callback[key] = cb;
   }
 
@@ -198,7 +198,7 @@ export default class {
     await this.sendTx(da, transfer_tx);
   }
 
-  async promisify(fn: Function) {
+  async promisify(fn: (arg: any) => void) {
     return promisify(this, async (cb) => {
       try {
         await fn(cb);
@@ -220,7 +220,7 @@ export default class {
   async sendTx(account: any, tx: any, cb_true_data?: any){
     await this.buildAccount(account);
 
-    return this.promisify(async (cb: Function)=>{
+    return this.promisify(async (cb: (arg1: any, arg2?: any) => void)=>{
       await tx.signAndSend(account, (param: any)=>{
         this._transactionCallback(param, (error: any) => {
           if(error){
@@ -235,7 +235,7 @@ export default class {
     });
   }
 
-  _transactionCallback(param: any, cb: Function) {
+  _transactionCallback(param: any, cb: (arg: any) => void) {
     const {events = [], status}: {events: any[], status: any} = param;
 
     if (status.isInBlock) {
