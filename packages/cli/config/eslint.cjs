@@ -11,7 +11,7 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    require.resolve('eslint-config-standard'),
+    // require.resolve('eslint-config-standard'),
     // 'plugin:import/errors',
     // 'plugin:import/warnings',
     // 'plugin:import/typescript',

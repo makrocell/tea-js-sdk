@@ -8,7 +8,7 @@ const {
   web3FromAddress: any,
 } = require('@polkadot/extension-dapp');
 
-import {_} from 'tearust_utils';
+const {_} = require('tearust_utils');
 
 class Extension {
   constructor(){

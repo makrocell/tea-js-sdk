@@ -10,6 +10,7 @@ module.exports = {
     '**/build/*',
     '**/coverage/*',
     '**/node_modules/*',
+    'node_modules/*',
     '*.cjs',
     'packages/cli/*',
   ],
