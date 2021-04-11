@@ -30,7 +30,15 @@ module.exports = {
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/restrict-plus-operands': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
+
+      // TODO fixed
       '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/await-thenable': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
     }
   }],
   parser: require.resolve('@typescript-eslint/parser'),

@@ -108,11 +108,11 @@ export default class {
     this.extension = extension;
     await this.extension.init();
 
-    await cryptoWaitReady();
-
     this.api.query.system.events((events) => {
       this.handle_events(events);
     });
+
+    await cryptoWaitReady();
   }
 
   async getLayer1Nonce(address: string){
@@ -217,7 +217,7 @@ export default class {
     }
   }
 
-  async sendTx(account: any, tx: any, cb_true_data?: any){
+  async sendTx(account: any, tx: any, cb_true_data?: any) {
     await this.buildAccount(account);
 
     return this.promisify(async (cb: (arg1: any, arg2?: any) => void)=>{
@@ -235,7 +235,7 @@ export default class {
     });
   }
 
-  _transactionCallback(param: any, cb: (arg: any) => void) {
+  _transactionCallback(param: any, cb: (arg1: any, arg2?: any) => void) {
     const {events = [], status}: {events: any[], status: any} = param;
 
     if (status.isInBlock) {
