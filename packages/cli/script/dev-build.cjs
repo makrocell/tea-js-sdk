@@ -89,7 +89,7 @@ function createMapEntry (rootDir, jsPath) {
 }
 
 // find the names of all the files in a certain directory
-function findFiles (buildDir, extra = '') {
+function findFiles (buildDir, extra = '', noDeep = false) {
   const currDir = extra ? path.join(buildDir, extra) : buildDir;
 
   return fs
@@ -108,7 +108,7 @@ function findFiles (buildDir, extra = '') {
       if (toDelete) {
         fs.unlinkSync(thisPath);
       } else if (fs.statSync(thisPath).isDirectory()) {
-        findFiles(buildDir, jsPath).forEach((entry) => all.push(entry));
+        !noDeep && findFiles(buildDir, jsPath).forEach((entry) => all.push(entry));
       } else if (!jsName.endsWith(EXT_OTHER) || !fs.existsSync(path.join(buildDir, jsPath.replace(EXT_OTHER, '.js')))) {
         // this is not mapped to a compiled .js file (where we have dual esm/cjs mappings)
         all.push(createMapEntry(buildDir, jsPath));
@@ -123,14 +123,14 @@ function buildExports () {
   const buildDir = path.join(process.cwd(), 'build');
   const pkgPath = path.join(buildDir, 'package.json');
   const pkg = require(pkgPath);
-  const list = findFiles(buildDir);
-
+  const list = findFiles(buildDir, '', true);
+  console.log(111, list)
   if (!list.some(([key]) => key === '.')) {
     // for the env-specifics, add a root key (if not available)
     list.push(['.', {
       browser: createMapEntry(buildDir, pkg.browser)[1],
       node: createMapEntry(buildDir, pkg.main)[1],
-      'react-native': createMapEntry(buildDir, pkg['react-native'])[1]
+      // 'react-native': createMapEntry(buildDir, pkg['react-native'])[1]
     }]);
 
     const indexDef = relativePath(pkg.main).replace('.js', '.d.ts');
@@ -141,7 +141,7 @@ function buildExports () {
       list.push([indexKey, indexDef]);
     }
   }
-
+  
   pkg.exports = list
     .sort((a, b) => a[0].localeCompare(b[0]))
     .reduce((all, [path, config]) => ({
