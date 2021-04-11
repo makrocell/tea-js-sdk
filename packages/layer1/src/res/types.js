@@ -90,7 +90,7 @@ const types = {
     btc: "Vec<Cid>",
     eth: "Vec<Cid>",
     dot: "Vec<Cid>",
- },
+  },
   Asset: {
     owner: 'AccountId',
     p2: 'Cid',
@@ -149,6 +149,6 @@ const types = {
   },
   OpaqueCall: 'Vec<u8>',
   Weight: 'u64'
-}
+};
 
-module.exports = types
+module.exports = types;

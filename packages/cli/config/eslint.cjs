@@ -20,7 +20,7 @@ module.exports = {
 
   ],
   overrides: [{
-    files: ['*.js', '*.cjs', '*.mjs'],
+    files: ['*.js', '*.cjs', '*.mjs', '*.ts'],
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-var-requires': 'off',
@@ -29,7 +29,8 @@ module.exports = {
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/restrict-plus-operands': 'off',
-      '@typescript-eslint/restrict-template-expressions': 'off'
+      '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
     }
   }],
   parser: require.resolve('@typescript-eslint/parser'),
@@ -100,7 +101,7 @@ module.exports = {
         ['^\\.\\.(?!/?$)', '^\\.\\./?$', '^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'] // local (. last)
       ]
     }],
-    'sort-keys': 'error'
+    'sort-keys': 'off',
   },
   settings: {
     'import/extensions': ['.js', '.ts', '.tsx'],

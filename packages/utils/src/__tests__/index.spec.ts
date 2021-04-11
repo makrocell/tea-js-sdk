@@ -1,4 +1,4 @@
-import {_, moment, uuid, crpyto} from '../';
+import {_, crpyto,moment, uuid} from '../';
 
 describe('utils/index', () => {
   it('lodash verison', () => {

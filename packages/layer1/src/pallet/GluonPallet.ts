@@ -1,15 +1,13 @@
 
-import BasePallet from './BasePallet';
-import helper from '../helper';
-
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
-import {
-  stringToU8a, 
-  u8aToString, 
-  hexToString,
-  u8aToHex, 
+import {hexToString,
   stringToHex, 
-} from '@polkadot/util';
+  stringToU8a, 
+  u8aToHex, 
+  u8aToString,} from '@polkadot/util';
+import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
+
+import helper from '../helper';
+import BasePallet from './BasePallet';
 
 const {crypto} = require('tearust_utils');
 
@@ -43,6 +41,7 @@ export default class extends BasePallet {
 
     const e64 = crypto.encode64(meta);
     const hex = u8aToHex(pub);
+
     console.log('responePairWithNonce', nonce, hex, e64);
     const tx = api.tx.gluon.sendRegistrationApplication(nonce, hex, e64);
     
@@ -52,6 +51,7 @@ export default class extends BasePallet {
   async unpair(account: any){
     const api = this.layer1.getApi();
     const tx = api.tx.gluon.unpairAppBrowser();
+
     await this.layer1.sendTx(account, tx);
   }
 
@@ -59,11 +59,12 @@ export default class extends BasePallet {
     const api = this.layer1.getApi();
     const empty_hex = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const pub = decodeAddress(address);
-    let profile: any = {
+    const profile: any = {
       address,
     };
     
     let me: any = await api.query.gluon.browserAppPair(pub);
+
     if(u8aToHex(me[0]) === empty_hex){
       me = await api.query.gluon.appBrowserPair(pub);
     }
@@ -75,6 +76,7 @@ export default class extends BasePallet {
     else{
       profile.pair_address = encodeAddress(me[0]);
       profile.meta = crypto.decode64(u8aToString(me[1]));
+
       try{
         profile.meta = JSON.parse(profile.meta);
       }catch(e){
@@ -87,6 +89,7 @@ export default class extends BasePallet {
 
   async getAccountProfile(address: string){
     const me = await this._getAccountProfile(address);
+
     if(!me.pair_address){
       return {
         ...me,
@@ -95,6 +98,7 @@ export default class extends BasePallet {
     }
 
     const pair = await this._getAccountProfile(me.pair_address);
+
     me.pair_meta = pair.meta;
 
     return me;

@@ -8,7 +8,9 @@ const F = {
   },
   sha256(data: any){
     const tmp = forge.sha256.create();
+
     tmp.update(data);
+
     return tmp.digest().toHex();
   },
 

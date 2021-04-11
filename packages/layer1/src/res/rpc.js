@@ -91,6 +91,6 @@ const rpc = {
       type: 'Vec<u8>'
     }
   }
-}
+};
 
 module.exports = rpc;

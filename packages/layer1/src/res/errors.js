@@ -35,9 +35,9 @@ InvalidKeyTypeForAccountAsset,
 `;
 
 const format = (errors)=>{
-return errors.split(',').map((v) => {
-  return v.trim();
-});
+  return errors.split(',').map((v) => {
+    return v.trim();
+  });
 };
 
 const RECOVERY_ERRORS = `
@@ -61,6 +61,6 @@ AlreadyProxy,
 
 // index list was defined in tea-layer1/runtime/src/lib.rs
 module.exports = {
-15: format(GLUON_ERRORS),
-13: format(RECOVERY_ERRORS),
+  15: format(GLUON_ERRORS),
+  13: format(RECOVERY_ERRORS),
 };

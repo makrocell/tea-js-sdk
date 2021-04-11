@@ -1,31 +1,26 @@
-import { 
-  ApiPromise, 
-  Keyring, 
-  WsProvider,
-} from '@polkadot/api';
-import {
-  cryptoWaitReady,
-  mnemonicGenerate,
-  encodeAddress,
-} from '@polkadot/util-crypto';
-import {
-  stringToU8a, 
-  u8aToString, 
-  u8aToHex, 
-  stringToHex, 
-  promisify,
-  bnToBn,
-  BN_MILLION
-} from '@polkadot/util';
 import BN from 'bn.js';
-import extension from './extension';
+
+import {ApiPromise, 
+  Keyring, 
+  WsProvider,} from '@polkadot/api';
+import {BN_MILLION,
+  bnToBn,
+  promisify,
+  stringToHex, 
+  stringToU8a, 
+  u8aToHex, 
+  u8aToString} from '@polkadot/util';
+import {cryptoWaitReady,
+  encodeAddress,
+  mnemonicGenerate,} from '@polkadot/util-crypto';
 
 import GluonPallet from './pallet/GluonPallet';
 import RecoveryPallet from './pallet/RecoveryPallet';
+import extension from './extension';
 
 const types: any = require('./res/types');
-const rpc:any = require('./res/rpc');
-const errors:any = require('./res/errors');
+const rpc: any = require('./res/rpc');
+const errors: any = require('./res/errors');
 
 const {_} = require('tearust_utils');
 
@@ -51,6 +46,7 @@ export default class {
     if(!opts || !opts.ws_url){
       throw 'Invalid Layer1 options';
     }
+
     this.opts = _.extend({
       http_url: '',
       system_top_up_account: 'Ferdie',
@@ -72,7 +68,7 @@ export default class {
     this.extension = null;
   }
 
-  buildCallback(key: string, cb: Function) {
+  buildCallback(key: string, cb: ()=>void) {
     this.callback[key] = cb;
   }
 
@@ -82,7 +78,8 @@ export default class {
       const types = event.typeDef;
 
       console.log(`[received layer1 event] section=${event.section}`);
-      let eventData: any = {};
+      const eventData: any = {};
+
       event.data.forEach((data: any, index: number) => {
         console.log(`[layer1 event data] ${types[index].type}: ${data.toString()}`);
         eventData[types[index].type] = data;
@@ -91,6 +88,7 @@ export default class {
       const data = event.data;
       const key = event.section+'.'+event.method;
       const cb = _.get(this.callback, key, null);
+
       if(cb){
         cb(data, event);
       }
@@ -100,6 +98,7 @@ export default class {
 
   async init(){
     const wsProvider = new WsProvider(this.opts.ws_url);
+
     this.api = await ApiPromise.create({
       provider: wsProvider,
       types,
@@ -119,6 +118,7 @@ export default class {
   async getLayer1Nonce(address: string){
     const api = this.getApi();
     const nonce = await api.rpc.system.accountNextIndex(address);
+
     return nonce;
   }
 
@@ -139,17 +139,20 @@ export default class {
 
   getApi(): ApiPromise{
     const api = this.api;
+
     if(!api){
       throw 'Get Layer1 Api failed';
     }
+
     return api;
   }
 
   async getRealAccountBalance(account: string): Promise<number> {
     const api = this.getApi();
-    let { data: { free: previousFree }, nonce: previousNonce } = await api.query.system.account(account);
+    const { data: { free: previousFree }, nonce: previousNonce } = await api.query.system.account(account);
 
     const bn = parseInt(previousFree.toString(), 10);
+
     return bn;
   }
 
@@ -157,6 +160,7 @@ export default class {
     const real_balance = await this.getRealAccountBalance(account);
 
     const free = real_balance / this.asUnit();
+
     return Math.floor(free*10000)/10000;
   }
 
@@ -165,8 +169,9 @@ export default class {
       mn = '//'+mn;
     }
 
-    const keyring = new Keyring({ type: 'sr25519' })
+    const keyring = new Keyring({ type: 'sr25519' });
     const ac = keyring.addFromUri(mn);
+
     return ac;
   }
 
@@ -174,7 +179,7 @@ export default class {
     return mnemonicGenerate();
   }
 
-  asUnit(num: number=1): number{
+  asUnit(num=1): number{
     const yi = new BN(BN_MILLION);
     const million = new BN(BN_MILLION);
     const unit: BN = yi.mul(million);
@@ -185,6 +190,7 @@ export default class {
   async faucet(target_address: string){
     const da = this.getAccountFrom(this.opts.system_top_up_account);
     const total = this.asUnit(this.opts.faucet_value);
+
     console.log('System account balance =>', await this.getRealAccountBalance(da.address));
     const api = this.getApi();
     const transfer_tx = api.tx.balances.transfer(target_address, total);
@@ -212,7 +218,8 @@ export default class {
   }
 
   async sendTx(account: any, tx: any, cb_true_data?: any){
-    await this.buildAccount(account)
+    await this.buildAccount(account);
+
     return this.promisify(async (cb: Function)=>{
       await tx.signAndSend(account, (param: any)=>{
         this._transactionCallback(param, (error: any) => {
@@ -225,16 +232,18 @@ export default class {
         });
         
       });
-    })
+    });
   }
 
   _transactionCallback(param: any, cb: Function) {
     const {events = [], status}: {events: any[], status: any} = param;
+
     if (status.isInBlock) {
       console.log('Included at block hash', status.asInBlock.toHex());
       console.log('Events:');
 
       const opts: any = {};
+
       events.forEach(({event: {data, method, section}, phase}) => {
         console.log(
           '\t',
@@ -242,12 +251,16 @@ export default class {
           `: ${section}.${method}`,
           data.toString(),
         );
+
         if (method === 'ExtrinsicFailed') {
           const error = this._findError(data);
+
           if (error) {
             cb(error);
+
             return;
           }
+
           opts.data = data;
         }
       });
@@ -261,10 +274,12 @@ export default class {
   _findError(data: any) {
     let err = false;
     let type_index = -1;
+
     _.each(data.toJSON(), (p: any) => {
       if (!_.isUndefined(_.get(p, 'module.error'))) {
         err = _.get(p, 'module.error');
         type_index = _.get(p, 'module.index');
+
         return false;
       }
     });
@@ -280,20 +295,24 @@ export default class {
     if(!this.extension){
       throw 'Not Extension Environment.';
     }
+
     const api = this.getApi();
+
     await this.extension.setSignerForAddress(account, api);
     const sig = await api.sign(account, {
       data: stringToHex(data)
     });
+
     return sig;
   }
 
   async getCurrentBlock(){
     const api = this.getApi();
+
     return new Promise((resolve)=>{
       api.rpc.chain.subscribeNewHeads((header) => {
         resolve(header);
-      })
+      });
     });
   }
 

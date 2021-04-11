@@ -1,4 +1,5 @@
-import {Layer1, bnToBn, helper} from '../';
+import {bnToBn, helper,Layer1} from '../';
+
 const {sleep} = require('tearust_utils');
 
 describe('layer1/Layer1', () => {
@@ -8,6 +9,7 @@ describe('layer1/Layer1', () => {
     const o = new Layer1({
       ws_url: 'ws://127.0.0.1:9944',
     });
+
     await o.init();
     
     const test_mn = o.mnemonicGenerate();

@@ -7,4 +7,4 @@ export default class {
     this.layer1 = layer1_instance;
 
   }
-};
+}

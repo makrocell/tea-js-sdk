@@ -11,7 +11,8 @@ export const uuid = (): string => {
 
 export const sleep = (time: number) => {
   return new Promise((resolve) => setTimeout(resolve, time));
-}
+};
+
 export const forge = require('node-forge');
 export const axios = require('axios');
 

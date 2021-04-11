@@ -1,8 +1,6 @@
-const { 
-  web3Accounts, 
+const {web3Accounts, 
   web3Enable, 
-  web3FromAddress,
-}: {
+  web3FromAddress,}: {
   web3Accounts: any, 
   web3Enable: any, 
   web3FromAddress: any,
@@ -32,7 +30,9 @@ class Extension {
 
   async setSignerForAddress(address: string, api: any){
     const injector = await web3FromAddress(address);
+
     api.setSigner(injector.signer);
+
     return injector;
   }
 }
