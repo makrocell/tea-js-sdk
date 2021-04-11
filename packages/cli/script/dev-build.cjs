@@ -124,7 +124,6 @@ function buildExports () {
   const pkgPath = path.join(buildDir, 'package.json');
   const pkg = require(pkgPath);
   const list = findFiles(buildDir, '', true);
-  console.log(111, list)
   if (!list.some(([key]) => key === '.')) {
     // for the env-specifics, add a root key (if not available)
     list.push(['.', {

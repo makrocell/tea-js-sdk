@@ -31,8 +31,9 @@ const F = {
     }
     console.log(chalk.yellow(`[${pkg_name}]: ${v} -> ${new_version}`));
 
-    txt = txt.toString().replace(`"version": "${v}"`, `"version": "${new_version}"`);
-    fs.writeFileSync(path, txt);
+    // txt = txt.toString().replace(`"version": "${v}"`, `"version": "${new_version}"`);
+    package.version = new_version;
+    fs.writeFileSync(path, JSON.stringify(package, null, 2));
   }
 };
 
