@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "resolutions": {
-    "typescript": "4.2.4"
+    "typescript": "3.9.7"
   },
   "scripts": {
     "build": "yarn workspace @tearust/cli build:dev",
@@ -17,7 +17,7 @@
     "test": "yarn workspace @tearust/cli test",
 
     "check": "yarn workspace @tearust/cli check-dev-env",
-    "clean": "yarn workspace @tearust/cli dev-clean-build",
+    "clean": "yarn workspace @tearust/cli build:clean",
 
     "//build:extra": ""
   },

@@ -30,6 +30,10 @@ type Layer1Opts = {
   http_url?: string,
   system_top_up_account?: string,
   faucet_value?: number,
+  onConnected?: Function,
+  onReady?: Function,
+  onDisconnected?: Function,
+  onConnectError?: Function,
 };
 
 export default class {
@@ -99,15 +103,36 @@ export default class {
   async init(){
     const wsProvider = new WsProvider(this.opts.ws_url);
 
-    this.api = await ApiPromise.create({
+    wsProvider.on('connected', ()=>{
+      console.log('***** Layer1 connected *****');
+      this.opts.onConnected && this.opts.onConnected();
+    });
+
+    wsProvider.on('disconnected', ()=>{
+      console.log('***** Layer1 disconneted *****');
+      this.opts.onDisconnected && this.opts.onDisconnected();
+    });
+
+    wsProvider.on('error', (err)=>{
+      this.opts.onConnectError && this.opts.onConnectError(err);
+    });
+
+    const _api = await ApiPromise.create({
       provider: wsProvider,
       types,
       rpc
     });
 
+    this.api = _api;
+
+    console.log('***** Layer1 ready *****');
+    this.opts.onReady && this.opts.onReady();
+
+    // TODO
     this.extension = extension;
     await this.extension.init();
 
+    
     this.api.query.system.events((events) => {
       this.handle_events(events);
     });
@@ -309,11 +334,13 @@ export default class {
   async getCurrentBlock(){
     const api = this.getApi();
 
-    return new Promise((resolve)=>{
-      api.rpc.chain.subscribeNewHeads((header) => {
-        resolve(header);
-      });
-    });
+    const header = await api.rpc.chain.getHeader();
+    return header.toHuman();
+  }
+
+  isConnected(){
+    const api = this.getApi();
+    return api.isConnected; 
   }
 
 }

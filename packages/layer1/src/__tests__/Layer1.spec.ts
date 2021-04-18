@@ -3,14 +3,16 @@ import {bnToBn, helper,Layer1} from '../';
 const {sleep} = require('tearust_utils');
 
 describe('layer1/Layer1', () => {
-  
-
-  it('it should correct when connect layer1', async ()=>{
-    const o = new Layer1({
+  let o: any = null;
+  beforeAll(async ()=>{
+    o = new Layer1({
       ws_url: 'ws://127.0.0.1:9944',
     });
 
     await o.init();
+  });
+
+  it.skip('it should correct when connect layer1', async ()=>{
     
     const test_mn = o.mnemonicGenerate();
     const test_ac = o.getAccountFrom(test_mn);
@@ -52,6 +54,28 @@ describe('layer1/Layer1', () => {
     // profile = await gluonPallet.getAccountProfile(alice.address);
     // console.log(33, profile);
     // gluon pallet - end
+
+  }, 30000);
+
+  it('it should correct for chain info', async ()=>{
+    const api = o.getApi();
+    // const header = await o.getCurrentBlock();
+    // const entries = await api.query.system.account.entries();
+
+    
+    const version = await api.rpc.system.version();
+    console.log('version =>', version.toHuman());
+
+    const name = await api.rpc.system.name();
+    console.log('name =>', name.toHuman());
+
+    // const chain_type = await api.rpc.system.chainType();
+    // console.log(33, chain_type.toHuman());
+
+    // const health = await api.rpc.system.health();
+    // console.log(44, health.toHuamn());
+
+    await sleep(3000);
 
   }, 30000);
 

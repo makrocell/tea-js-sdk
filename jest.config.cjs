@@ -1,6 +1,3 @@
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
 const config = require('@tearust/cli/config/jest.cjs');
 
 module.exports = Object.assign({}, config, {
@@ -13,5 +10,6 @@ module.exports = Object.assign({}, config, {
     // '<rootDir>/packages/layer1/*',
     '<rootDir>/packages/utils/*',
   ],
-  transformIgnorePatterns: []
+  transformIgnorePatterns: [],
+  verbose: true,
 });

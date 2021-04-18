@@ -8,9 +8,8 @@
 
   },
   "scripts": {
-    "check-dev-env": "./scripts/check-dev-env.cjs",
-    "dev-clean-build": "./scripts/polkadot-dev-clean-build.cjs",
-
+    "check-dev-env": "./script/check-dev-env.cjs",
+    "build:clean": "./script/dev-clean-build.cjs",
     "build:dev": "./script/dev-build.cjs",
     "test": "./script/dev-run-test.cjs --passWithNoTests --testPathIgnorePatterns --runInBand",
     "lint": "./script/dev-run-lint.cjs"
@@ -74,7 +73,7 @@
     "mkdirp": "^1.0.4",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
-    "typescript": "4.2.4",
+    "typescript": "3.9.7",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
