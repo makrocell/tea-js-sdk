@@ -4,6 +4,7 @@ const {sleep} = require('tearust_utils');
 
 describe('layer1/Layer1', () => {
   let o: any = null;
+
   beforeAll(async ()=>{
     o = new Layer1({
       ws_url: 'ws://127.0.0.1:9944',
@@ -64,9 +65,11 @@ describe('layer1/Layer1', () => {
 
     
     const version = await api.rpc.system.version();
+
     console.log('version =>', version.toHuman());
 
     const name = await api.rpc.system.name();
+
     console.log('name =>', name.toHuman());
 
     // const chain_type = await api.rpc.system.chainType();

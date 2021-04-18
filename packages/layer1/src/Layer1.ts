@@ -30,10 +30,10 @@ type Layer1Opts = {
   http_url?: string,
   system_top_up_account?: string,
   faucet_value?: number,
-  onConnected?: Function,
-  onReady?: Function,
-  onDisconnected?: Function,
-  onConnectError?: Function,
+  onConnected?: () => void,
+  onReady?: () => void,
+  onDisconnected?: () => void,
+  onConnectError?: (err: any) => void,
 };
 
 export default class {
@@ -335,11 +335,13 @@ export default class {
     const api = this.getApi();
 
     const header = await api.rpc.chain.getHeader();
+
     return header.toHuman();
   }
 
   isConnected(){
     const api = this.getApi();
+
     return api.isConnected; 
   }
 

@@ -8,6 +8,7 @@ module.exports = {
     '.vscode/**',
     '.yarn/**',
     '**/build/*',
+    '**/__tests__/*',
     '**/coverage/*',
     '**/node_modules/*',
     'node_modules/*',
