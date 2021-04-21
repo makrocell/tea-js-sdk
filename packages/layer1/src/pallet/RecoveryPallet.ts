@@ -98,4 +98,17 @@ export default class extends BasePallet {
 
     await this.layer1.sendTx(account, tx);
   }
+
+  async closeRecovery(
+    account: any,
+    lost_address: string,
+  ){
+    const me_address = _.isString(account) ? account : account.address;
+    const api = this.layer1.getApi();
+    const pre_tx = api.tx.recovery.closeRecovery(me_address);
+    const tx = api.tx.recovery.asRecovered(lost_address, pre_tx);
+
+    await this.layer1.sendTx(account, tx);
+  }
+
 }

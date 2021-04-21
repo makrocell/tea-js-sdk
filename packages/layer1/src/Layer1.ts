@@ -12,11 +12,12 @@ import {BN_MILLION,
   u8aToString} from '@polkadot/util';
 import {cryptoWaitReady,
   encodeAddress,
-  mnemonicGenerate,} from '@polkadot/util-crypto';
+  mnemonicGenerate,
+} from '@polkadot/util-crypto';
+
 
 import GluonPallet from './pallet/GluonPallet';
 import RecoveryPallet from './pallet/RecoveryPallet';
-import extension from './extension';
 
 const types: any = require('./res/types');
 const rpc: any = require('./res/rpc');
@@ -34,6 +35,7 @@ type Layer1Opts = {
   onReady?: () => void,
   onDisconnected?: () => void,
   onConnectError?: (err: any) => void,
+  env?: string,
 };
 
 export default class {
@@ -55,6 +57,7 @@ export default class {
       http_url: '',
       system_top_up_account: 'Ferdie',
       faucet_value: 1000,
+      env: 'browser',
     }, opts);
 
     this.api = null;
@@ -128,11 +131,13 @@ export default class {
     console.log('***** Layer1 ready *****');
     this.opts.onReady && this.opts.onReady();
 
-    // TODO
-    this.extension = extension;
-    await this.extension.init();
-
+    if(this.opts.env === 'browser'){
+      const Extension = require('./extension');
+      this.extension = new Extension();
+      await this.extension.init();
+    }
     
+
     this.api.query.system.events((events) => {
       this.handle_events(events);
     });
@@ -234,7 +239,7 @@ export default class {
   }
 
   async buildAccount(account: any){
-    if(_.isString(account)){
+    if(this.opts.env === 'browser' && _.isString(account)){
       return await this.extension.setSignerForAddress(account, this.getApi());
     }
     else{

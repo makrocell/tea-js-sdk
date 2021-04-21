@@ -1,10 +1,9 @@
-const {web3Accounts, 
+
+import {
+  web3Accounts, 
   web3Enable, 
-  web3FromAddress,}: {
-  web3Accounts: any, 
-  web3Enable: any, 
-  web3FromAddress: any,
-} = require('@polkadot/extension-dapp');
+  web3FromAddress,
+} from '@polkadot/extension-dapp';
 
 const {_} = require('tearust_utils');
 
@@ -37,4 +36,4 @@ class Extension {
   }
 }
 
-export default new Extension();
+export default Extension;

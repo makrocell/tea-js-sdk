@@ -1,4 +1,4 @@
-import {_, crpyto,moment, uuid} from '../';
+import {_, crypto, moment, uuid} from '../';
 
 describe('utils/index', () => {
   it('lodash verison', () => {
@@ -17,17 +17,17 @@ describe('utils/crypto', () => {
 
   it('sha256 and hash', () => {
   
-    const hash_rs = crpyto.hash(data);
-    const sha256_rs = crpyto.sha256(data);
+    const hash_rs = crypto.hash(data);
+    const sha256_rs = crypto.sha256(data);
 
     expect(hash_rs).toEqual(sha256_rs);
   });
 
   it('encode64 and decode64', () => {
-    const rs = crpyto.encode64(data);
+    const rs = crypto.encode64(data);
 
     expect(rs).toEqual('amFja3kubGk=');
 
-    expect(data).toEqual(crpyto.decode64('amFja3kubGk='));
+    expect(data).toEqual(crypto.decode64('amFja3kubGk='));
   });
 });
