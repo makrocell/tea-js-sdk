@@ -32,7 +32,7 @@ AppBrowserPairNotExist,
 TaskTimeout,
 PairNotExist,
 InvalidKeyTypeForAccountAsset,
-AssetSuspend,
+AssetSuspend
 `;
 
 const format = (errors)=>{
@@ -57,7 +57,7 @@ AlreadyVouched,
 Threshold,
 StillActive,
 Overflow,
-AlreadyProxy,
+AlreadyProxy
 `;
 
 // index list was defined in tea-layer1/runtime/src/lib.rs

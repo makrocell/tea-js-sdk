@@ -133,7 +133,7 @@ export default class {
 
     if(this.opts.env === 'browser'){
       const Extension = require('./extension');
-      this.extension = new Extension();
+      this.extension = Extension.default ? new Extension.default() : new Extension();
       await this.extension.init();
     }
     
