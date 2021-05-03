@@ -32,6 +32,7 @@ AppBrowserPairNotExist,
 TaskTimeout,
 PairNotExist,
 InvalidKeyTypeForAccountAsset,
+AssetSuspend,
 `;
 
 const format = (errors)=>{
