@@ -36,6 +36,8 @@ type Layer1Opts = {
   onDisconnected?: () => void,
   onConnectError?: (err: any) => void,
   env?: string,
+  types?: any,
+  rpc?: any,
 };
 
 export default class {
@@ -58,6 +60,8 @@ export default class {
       system_top_up_account: 'Ferdie',
       faucet_value: 1000,
       env: 'browser',
+      types: types,
+      rpc: rpc,
     }, opts);
 
     this.api = null;
@@ -122,8 +126,8 @@ export default class {
 
     const _api = await ApiPromise.create({
       provider: wsProvider,
-      types,
-      rpc
+      types: this.opts.types,
+      rpc: this.opts.rpc,
     });
 
     this.api = _api;
