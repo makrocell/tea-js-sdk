@@ -1,6 +1,6 @@
 {
   "name": "tearust_utils",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "license": "GPL-3.0",
   "repository": "https://github.com/tearust/tea-js-sdk",
   "type": "module",
