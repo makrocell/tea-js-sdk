@@ -8,8 +8,11 @@ import {BN_MILLION,
   promisify,
   stringToHex, 
   stringToU8a, 
-  u8aToHex, 
-  u8aToString} from '@polkadot/util';
+  u8aToHex,
+  numberToHex,
+  bnFromHex,
+  u8aToString
+} from '@polkadot/util';
 import {cryptoWaitReady,
   encodeAddress,
   mnemonicGenerate,
@@ -21,10 +24,10 @@ import RecoveryPallet from './pallet/RecoveryPallet';
 
 const types: any = require('./res/types');
 const rpc: any = require('./res/rpc');
-const errors: any = require('./res/errors');
 
 const {_} = require('tearust_utils');
 
+let metadata = {};
 
 type Layer1Opts = {
   ws_url: string,
@@ -79,6 +82,33 @@ export default class {
     this.extension = null;
   }
 
+  getMetadata(){
+    return metadata;
+  }
+
+  initMetdata(api: any){
+    const consts = api._consts;
+    const events = api._events;
+    const tx = api._extrinsics;
+    const errors = api._errors;
+
+
+    metadata = {
+      consts,
+      events,
+      tx,
+      errors,
+      extrinsicVersion: api.extrinsicVersion,
+      libraryInfo: api.libraryInfo,
+      chainSS58: api.registry.chainSS58,
+      token: api.registry.chainTokens[0],
+      types: api.registry.knownTypes.types,
+      runtimeChain: api._runtimeChain.toString(),
+      supportMulti: api.supportMulti,
+
+    };
+  }
+
   buildCallback(key: string, cb: () => void) {
     this.callback[key] = cb;
   }
@@ -131,6 +161,8 @@ export default class {
     });
 
     this.api = _api;
+
+    this.initMetdata(this.api);
 
     console.log('***** Layer1 ready *****');
     this.opts.onReady && this.opts.onReady();
@@ -308,6 +340,7 @@ export default class {
   _findError(data: any) {
     let err = false;
     let type_index = -1;
+    const api = this.getApi();
 
     _.each(data.toJSON(), (p: any) => {
       if (!_.isUndefined(_.get(p, 'module.error'))) {
@@ -319,7 +352,20 @@ export default class {
     });
 
     if (err !== false) {
-      return _.get(errors, type_index+'.'+err, 'Not Found in Error definination with [index: '+type_index+', error: '+err+']');
+      const errorIndex = {
+        index: bnFromHex(numberToHex(type_index)),
+        error: bnFromHex(numberToHex(err)),
+      };
+
+      let error = null;
+      try{
+        error = api.registry.findMetaError(errorIndex);
+        error = error.name;
+      }catch(e){
+        error = 'Not Found in Error definination with [index: '+type_index+', error: '+err+']';
+      }
+      
+      return error;
     }
 
     return null;
