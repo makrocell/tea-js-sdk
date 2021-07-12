@@ -287,7 +287,8 @@ export default class {
     await this.buildAccount(account);
 
     return this.promisify(async (cb: (arg1: any, arg2?: any) => void)=>{
-      await tx.signAndSend(account, (param: any)=>{
+      const nonce = await this.getLayer1Nonce(account.address || account);
+      tx.signAndSend(account, {nonce}, (param: any)=>{
         this._transactionCallback(param, (error: any) => {
           if(error){
             cb(error);
