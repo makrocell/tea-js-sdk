@@ -285,20 +285,24 @@ export default class {
 
   async sendTx(account: any, tx: any, cb_true_data?: any) {
     await this.buildAccount(account);
-
     return this.promisify(async (cb: (arg1: any, arg2?: any) => void)=>{
       const nonce = await this.getLayer1Nonce(account.address || account);
-      tx.signAndSend(account, {nonce}, (param: any)=>{
-        this._transactionCallback(param, (error: any) => {
-          if(error){
-            cb(error);
-          }
-          else{
-            cb(null, cb_true_data);
-          }
+      try{
+        await tx.signAndSend(account, {nonce}, (param: any)=>{
+          this._transactionCallback(param, (error: any) => {
+            if(error){
+              cb(error);
+            }
+            else{
+              cb(null, cb_true_data);
+            }
+          });
+          
         });
-        
-      });
+      }catch(e){
+        cb(_.isString(e) ? e : (e.message||e.toString()));
+      }
+      
     });
   }
 
