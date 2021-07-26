@@ -276,6 +276,7 @@ export default class {
 
   async buildAccount(account: any){
     if(this.opts.env === 'browser' && _.isString(account)){
+      console.log('wrap account with extension');
       return await this.extension.setSignerForAddress(account, this.getApi());
     }
     else{
@@ -285,11 +286,15 @@ export default class {
 
   async sendTx(account: any, tx: any, cb_true_data?: any) {
     await this.buildAccount(account);
+
     return this.promisify(async (cb: (arg1: any, arg2?: any) => void)=>{
       const nonce = await this.getLayer1Nonce(account.address || account);
       try{
+        console.log('prepare to send tx...');
         await tx.signAndSend(account, {nonce}, (param: any)=>{
           this._transactionCallback(param, (error: any) => {
+            console.log('After send tx...');
+            
             if(error){
               cb(error);
             }
