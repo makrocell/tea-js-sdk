@@ -41,6 +41,7 @@ type Layer1Opts = {
   env?: string,
   types?: any,
   rpc?: any,
+  event_log?: boolean,
 };
 
 export default class {
@@ -65,6 +66,7 @@ export default class {
       env: 'browser',
       types: types,
       rpc: rpc,
+      event_log: false,
     }, opts);
 
     this.api = null;
@@ -118,11 +120,11 @@ export default class {
       const {event, phase} = record;
       const types = event.typeDef;
 
-      console.log(`[received layer1 event] section=${event.section}`);
+      this.opts.event_log && console.log(`[received layer1 event] section=${event.section}`);
       const eventData: any = {};
 
       event.data.forEach((data: any, index: number) => {
-        console.log(`[layer1 event data] ${types[index].type}: ${data.toString()}`);
+        this.opts.event_log && console.log(`[layer1 event data] ${types[index].type}: ${data.toString()}`);
         eventData[types[index].type] = data;
       });
 
