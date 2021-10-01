@@ -1,6 +1,6 @@
 {
   "name": "tearust_layer1",
-  "version": "0.1.5",
+  "version": "1.0.1",
   "license": "GPL-3.0",
   "repository": "https://github.com/tearust/tea-js-sdk",
   "description": "",
@@ -9,8 +9,8 @@
   "dependencies": {
     "@babel/runtime": "7.13.10",
     "tearust_utils": "*",
-    "@polkadot/api": "4.11.2",
-    "@polkadot/util": "6.11.1",
+    "@polkadot/api": "6.0.5",
+    "@polkadot/util": "7.4.1",
     "@polkadot/extension-dapp": "0.32.1"
   },
   "devDependencies": {}

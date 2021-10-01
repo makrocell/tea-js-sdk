@@ -185,9 +185,10 @@ export default class {
 
   async getLayer1Nonce(address: string){
     const api = this.getApi();
-    const nonce = await api.rpc.system.accountNextIndex(address);
+    const nonce: any = await api.rpc.system.accountNextIndex(address);
+    const rs: number = nonce.toJSON();
 
-    return nonce;
+    return rs;
   }
 
   getGluonPallet(): GluonPallet {
