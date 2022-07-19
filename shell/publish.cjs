@@ -20,7 +20,7 @@ async function start (){
   }
 
   process.chdir(path);
-  exec('npm publish --registry http://registry.npmjs.org');
+  exec('npm publish');
   
 };
 
